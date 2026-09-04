@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>how long i've let her go</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #0A1B23;
+    --bg-deep: #071319;
+    --ink: #E6F1EF;
+    --ink-soft: #93B2B0;
+    --ink-faint: #587A79;
+    --sage: #4FB8A8;
+    --sage-deep: #6FD6C4;
+    --rose: #E29684;
+    --card: #0F2831;
+    --line: #1E3A3F;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page{
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 64px 24px 80px;
+  }
+
+  .sheet{
+    width: 100%;
+    max-width: 620px;
+  }
+
+  .kicker{
+    font-size: 13px;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  .top-row{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+
+  .song-link{
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    text-decoration: none;
+    max-width: 60%;
+    justify-content: flex-end;
+    text-align: right;
+  }
+  .song-link svg{ width: 13px; height: 13px; flex-shrink: 0; }
+  .song-link:hover{ color: var(--sage-deep); }
+  .song-link span{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(28px, 5vw, 40px);
+    line-height: 1.2;
+    margin: 0 0 40px;
+    max-width: 12ch;
+    color: var(--ink);
+  }
+
+  .timer{
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 28px 0;
+    margin-bottom: 20px;
+  }
+
+  .unit{
+    flex: 1 1 0;
+    min-width: 80px;
+    text-align: center;
+    padding: 6px 4px;
+    border-left: 1px solid var(--line);
+  }
+  .unit:first-child{ border-left: none; }
+
+  .unit-num{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(24px, 5vw, 34px);
+    color: var(--sage-deep);
+    line-height: 1;
+  }
+
+  .unit-label{
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+
+  .since{
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin: 0 0 48px;
+  }
+
+  .reset-row{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 56px;
+    min-height: 34px;
+    align-items: center;
+  }
+
+  .reset-link{
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: 6px 0;
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 3px;
+  }
+  .reset-link:hover{ color: var(--rose); text-decoration-color: var(--rose); }
+
+  .confirm-row{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .confirm-row button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 4px 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .confirm-yes{ color: var(--rose); text-decoration-color: var(--rose); }
+  .confirm-no{ color: var(--ink-faint); text-decoration-color: var(--line); }
+
+  .quote-card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 30px 32px;
+    margin-bottom: 28px;
+    min-height: 108px;
+  }
+
+  .quote-text{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0 0 12px;
+    transition: opacity 0.5s ease;
+  }
+
+  .quote-attr{
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    transition: opacity 0.5s ease;
+  }
+
+  .fading{ opacity: 0; }
+
+  .try-band{
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .try-label{
+    flex-shrink: 0;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+
+  .try-text{
+    flex: 1;
+    font-size: 14.5px;
+    color: var(--ink);
+    transition: opacity 0.4s ease;
+  }
+
+  .shuffle-btn{
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+  .shuffle-btn:hover{ border-color: var(--sage); color: var(--sage-deep); }
+  .shuffle-btn svg{ width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="sheet">
+
+    <div class="top-row">
+      <p class="kicker">the counter</p>
+      <a class="song-link" id="song-link" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+        <span id="song-label">song of the day</span>
+      </a>
+    </div>
+    <h1>how long i've stopped thinking about her</h1>
+
+    <div class="timer" id="timer">
+      <div class="unit"><div class="unit-num" id="u-years">0</div><div class="unit-label">years</div></div>
+      <div class="unit"><div class="unit-num" id="u-months">0</div><div class="unit-label">months</div></div>
+      <div class="unit"><div class="unit-num" id="u-days">0</div><div class="unit-label">days</div></div>
+      <div class="unit"><div class="unit-num" id="u-hours">00</div><div class="unit-label">hours</div></div>
+      <div class="unit"><div class="unit-num" id="u-mins">00</div><div class="unit-label">minutes</div></div>
+      <div class="unit"><div class="unit-num" id="u-secs">00</div><div class="unit-label">seconds</div></div>
+    </div>
+
+    <p class="since" id="since-line">since —</p>
+
+    <div class="reset-row" id="reset-row">
+      <button class="reset-link" id="reset-btn">i thought about her again</button>
+    </div>
+
+    <div class="quote-card">
+      <p class="quote-text" id="quote-text">&nbsp;</p>
+      <p class="quote-attr" id="quote-attr">&nbsp;</p>
+    </div>
+
+    <div class="try-band">
+      <span class="try-label">try this instead</span>
+      <span class="try-text" id="try-text">&nbsp;</span>
+      <button class="shuffle-btn" id="shuffle-btn" aria-label="show another suggestion">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+
+  var STORAGE_KEY = 'letting-go:start-timestamp';
+  var startTime = null;
+
+  var quotes = [
+    { text: "The past is a place of reference, not a place of residence.", attr: "Roy T. Bennett" },
+    { text: "We are all of us stars, and we deserve to twinkle.", attr: "Marilyn Monroe" },
+    { text: "There ain't no way to hold onto something that wants to go.", attr: "Kate DiCamillo" },
+    { text: "Letting go doesn't mean you stop caring. It means you stop trying to control what you can't.", attr: "after Deborah Reber" },
+    { text: "The longer you live in the past, the less future you have to enjoy.", attr: "unknown" },
+    { text: "You can't start a new chapter if you keep re-reading the last one.", attr: "unknown" },
+    { text: "Suffering is not holding you. You are holding suffering.", attr: "unknown" },
+    { text: "Holding on is believing there's only a past. Letting go is knowing there's a future.", attr: "after Daphne Rose Kingma" },
+    { text: "Every new beginning comes from some other beginning's end.", attr: "after Seneca" },
+    { text: "Not every storm comes to disrupt your life. Some come to clear your path.", attr: "unknown" },
+    { text: "You are not what happened to you. You are what you choose to become.", attr: "unknown" },
+    { text: "Some people are meant to fall out of your life for you to grow.", attr: "unknown" },
+    { text: "The comeback is always stronger than the setback.", attr: "unknown" },
+    { text: "Time doesn't heal everything on its own — but it does hand you the tools, if you use them.", attr: "unknown" }
+  ];
+
+  var songs = [
+    { title: "Since U Been Gone", artist: "Kelly Clarkson" },
+    { title: "Stronger (What Doesn't Kill You)", artist: "Kelly Clarkson" },
+    { title: "Survivor", artist: "Destiny's Child" },
+    { title: "I Will Survive", artist: "Gloria Gaynor" },
+    { title: "Rolling in the Deep", artist: "Adele" },
+    { title: "Good as Hell", artist: "Lizzo" },
+    { title: "Irreplaceable", artist: "Beyonce" },
+    { title: "Shake It Off", artist: "Taylor Swift" },
+    { title: "Fighter", artist: "Christina Aguilera" },
+    { title: "New Rules", artist: "Dua Lipa" },
+    { title: "thank u, next", artist: "Ariana Grande" },
+    { title: "Breakaway", artist: "Kelly Clarkson" },
+    { title: "Somebody That I Used to Know", artist: "Gotye" },
+    { title: "Just Fine", artist: "Mary J. Blige" },
+    { title: "Roar", artist: "Katy Perry" }
+  ];
+
+  var suggestions = [
+    "go for a 20-minute walk with your phone left at home",
+    "text a friend you haven't spoken to in a while",
+    "rearrange one piece of furniture in your room",
+    "cook something you've never tried before",
+    "write down three things you're proud of today",
+    "do 20 pushups, right now",
+    "watch a documentary about something totally unrelated",
+    "declutter one drawer",
+    "call a family member just to talk",
+    "learn five words in a language you don't speak",
+    "journal for five minutes, no filter",
+    "step outside and look at the sky for two minutes",
+    "make a playlist that has nothing to do with her",
+    "take a cold shower",
+    "stretch for ten minutes",
+    "sketch something badly on purpose",
+    "plan a trip you might never take",
+    "clean up your desktop files",
+    "do the dishes, slowly, on purpose",
+    "message a friend and actually ask about their day",
+    "reorganize your bookshelf",
+    "cook your favorite comfort meal for one",
+    "go somewhere in your city you've never been"
+  ];
+
+  function pad(n){ return String(n).padStart(2, '0'); }
+
+  function computeBreakdown(from, to){
+    var years = to.getFullYear() - from.getFullYear();
+    var months = to.getMonth() - from.getMonth();
+    var days = to.getDate() - from.getDate();
+    var hours = to.getHours() - from.getHours();
+    var mins = to.getMinutes() - from.getMinutes();
+    var secs = to.getSeconds() - from.getSeconds();
+
+    if(secs < 0){ secs += 60; mins -= 1; }
+    if(mins < 0){ mins += 60; hours -= 1; }
+    if(hours < 0){ hours += 24; days -= 1; }
+    if(days < 0){
+      var prevMonth = new Date(to.getFullYear(), to.getMonth(), 0);
+      days += prevMonth.getDate();
+      months -= 1;
+    }
+    if(months < 0){ months += 12; years -= 1; }
+
+    return { years: years, months: months, days: days, hours: hours, mins: mins, secs: secs };
+  }
+
+  function renderTimer(){
+    if(!startTime) return;
+    var now = new Date();
+    var b = computeBreakdown(startTime, now);
+    document.getElementById('u-years').textContent = b.years;
+    document.getElementById('u-months').textContent = b.months;
+    document.getElementById('u-days').textContent = b.days;
+    document.getElementById('u-hours').textContent = pad(b.hours);
+    document.getElementById('u-mins').textContent = pad(b.mins);
+    document.getElementById('u-secs').textContent = pad(b.secs);
+  }
+
+  function renderSinceLine(){
+    if(!startTime) return;
+    var opts = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+    document.getElementById('since-line').textContent = 'since ' + startTime.toLocaleString(undefined, opts);
+  }
+
+  function crossfade(el, newContent){
+    el.classList.add('fading');
+    setTimeout(function(){
+      el.textContent = newContent;
+      el.classList.remove('fading');
+    }, 500);
+  }
+
+  function showRandomQuote(){
+    var q = quotes[Math.floor(Math.random() * quotes.length)];
+    var textEl = document.getElementById('quote-text');
+    var attrEl = document.getElementById('quote-attr');
+    crossfade(textEl, '\u201C' + q.text + '\u201D');
+    crossfade(attrEl, '\u2014 ' + q.attr);
+  }
+
+  function showRandomSuggestion(){
+    var s = suggestions[Math.floor(Math.random() * suggestions.length)];
+    crossfade(document.getElementById('try-text'), s);
+  }
+
+  async function loadStartTime(){
+    try{
+      var result = await window.storage.get(STORAGE_KEY, false);
+      if(result && result.value){
+        startTime = new Date(result.value);
+      } else {
+        startTime = new Date();
+        await window.storage.set(STORAGE_KEY, startTime.toISOString(), false);
+      }
+    }catch(err){
+      startTime = new Date();
+      try{
+        await window.storage.set(STORAGE_KEY, startTime.toISOString(), false);
+      }catch(err2){
+        console.error('storage unavailable, timer will not persist', err2);
+      }
+    }
+    renderTimer();
+    renderSinceLine();
+  }
+
+  async function resetTimer(){
+    startTime = new Date();
+    try{
+      await window.storage.set(STORAGE_KEY, startTime.toISOString(), false);
+    }catch(err){
+      console.error('could not save reset', err);
+    }
+    renderTimer();
+    renderSinceLine();
+  }
+
+  function setupResetButton(){
+    var row = document.getElementById('reset-row');
+
+    function showDefault(){
+      row.innerHTML = '<button class="reset-link" id="reset-btn">i thought about her again</button>';
+      document.getElementById('reset-btn').addEventListener('click', showConfirm);
+    }
+
+    function showConfirm(){
+      row.innerHTML =
+        '<div class="confirm-row">' +
+          '<span>reset the counter?</span>' +
+          '<button class="confirm-yes" id="confirm-yes">yes, reset it</button>' +
+          '<button class="confirm-no" id="confirm-no">no, keep going</button>' +
+        '</div>';
+      document.getElementById('confirm-yes').addEventListener('click', async function(){
+        await resetTimer();
+        showDefault();
+      });
+      document.getElementById('confirm-no').addEventListener('click', showDefault);
+    }
+
+    showDefault();
+  }
+
+  function setupSongOfTheDay(){
+    var now = new Date();
+    var startOfYear = new Date(now.getFullYear(), 0, 0);
+    var dayIndex = Math.floor((now - startOfYear) / 86400000);
+    var song = songs[dayIndex % songs.length];
+    var query = encodeURIComponent(song.title + ' ' + song.artist);
+    var link = document.getElementById('song-link');
+    var label = document.getElementById('song-label');
+    label.textContent = song.title + ' \u2014 ' + song.artist;
+    link.href = 'https://www.youtube.com/results?search_query=' + query;
+  }
+
+  loadStartTime();
+  setInterval(renderTimer, 1000);
+  setupResetButton();
+  setupSongOfTheDay();
+
+  showRandomQuote();
+  showRandomSuggestion();
+  setInterval(showRandomQuote, 12000);
+  setInterval(showRandomSuggestion, 8000);
+  document.getElementById('shuffle-btn').addEventListener('click', showRandomSuggestion);
+
+})();
+</script>
+
+</body>
+</html>
